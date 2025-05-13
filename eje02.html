@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Formulario de Contacto</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        .formulario-container {
+            background-color: white;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            width: 100%;
+            max-width: 500px;
+        }
+
+        h2 {
+            text-align: center;
+            color: #333;
+            margin-bottom: 30px;
+        }
+
+        .campo {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 5px;
+            color: #555;
+        }
+
+        input, textarea {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 16px;
+        }
+
+        textarea {
+            height: 150px;
+            resize: vertical;
+        }
+
+        .error {
+            color: #e74c3c;
+            font-size: 14px;
+            margin-top: 5px;
+            display: none;
+        }
+
+        button {
+            background-color: #2ecc71;
+            color: white;
+            padding: 12px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            width: 100%;
+            font-size: 16px;
+            transition: background-color 0.3s;
+        }
+
+        button:hover {
+            background-color: #27ae60;
+        }
+
+        input.invalid, textarea.invalid {
+            border-color: #e74c3c;
+        }
+
+        .mensaje-exito {
+            display: none;
+            background-color: #2ecc71;
+            color: white;
+            padding: 15px;
+            border-radius: 4px;
+            text-align: center;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="formulario-container">
+        <h2>Contáctanos</h2>
+        <form id="formularioContacto" onsubmit="return validarFormulario(event)">
+            <div class="campo">
+                <label for="nombre">Nombre:</label>
+                <input type="text" id="nombre" name="nombre" onblur="validarCampo(this)">
+                <div class="error" id="error-nombre">Por favor, ingrese su nombre</div>
+            </div>
+
+            <div class="campo">
+                <label for="email">Correo Electrónico:</label>
+                <input type="email" id="email" name="email" onblur="validarCampo(this)">
+                <div class="error" id="error-email">Por favor, ingrese un correo electrónico válido</div>
+            </div>
+
+            <div class="campo">
+                <label for="mensaje">Mensaje:</label>
+                <textarea id="mensaje" name="mensaje" onblur="validarCampo(this)"></textarea>
+                <div class="error" id="error-mensaje">Por favor, ingrese su mensaje</div>
+            </div>
+
+            <button type="submit">Enviar Mensaje</button>
+        </form>
+        <div class="mensaje-exito" id="mensajeExito">
+            ¡Mensaje enviado con éxito!
+        </div>
+    </div>
+
+    <script>
+        function validarCampo(campo) {
+            const error = document.getElementById(`error-${campo.id}`);
+            let esValido = true;
+
+            // Eliminar espacios en blanco al inicio y final
+            campo.value = campo.value.trim();
+
+            // Validación específica para cada campo
+            switch(campo.id) {
+                case 'nombre':
+                    esValido = campo.value.length >= 2;
+                    break;
+                case 'email':
+                    esValido = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(campo.value);
+                    break;
+                case 'mensaje':
+                    esValido = campo.value.length >= 10;
+                    break;
+            }
+
+            // Mostrar u ocultar mensaje de error
+            if (!esValido) {
+                campo.classList.add('invalid');
+                error.style.display = 'block';
+            } else {
+                campo.classList.remove('invalid');
+                error.style.display = 'none';
+            }
+
+            return esValido;
+        }
+
+        function validarFormulario(event) {
+            event.preventDefault();
+            
+            const nombre = document.getElementById('nombre');
+            const email = document.getElementById('email');
+            const mensaje = document.getElementById('mensaje');
+            
+            const esNombreValido = validarCampo(nombre);
+            const esEmailValido = validarCampo(email);
+            const esMensajeValido = validarCampo(mensaje);
+
+            if (esNombreValido && esEmailValido && esMensajeValido) {
+                // Mostrar mensaje de éxito
+                document.getElementById('mensajeExito').style.display = 'block';
+                
+                // Limpiar el formulario
+                document.getElementById('formularioContacto').reset();
+                
+                // Ocultar mensaje de éxito después de 3 segundos
+                setTimeout(() => {
+                    document.getElementById('mensajeExito').style.display = 'none';
+                }, 3000);
+                
+                return false;
+            }
+
+            return false;
+        }
+    </script>
+</body>
+</html>
